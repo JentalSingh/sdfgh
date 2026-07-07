@@ -1,5 +1,5 @@
 """
-BabyCenter - Complete Flow (With Proxy Rotation from File)
+BabyCenter - Complete Flow (With Proxy Rotation & Verification)
 """
 
 import time
@@ -607,15 +607,36 @@ def main():
             print(f"   ⚠️ Screen name form not found: {e}")
         
         # ============================================================
-        # STEP 12: GET SUCCESS MESSAGE
+        # STEP 12: VERIFICATION - URL & TITLE
+        # ============================================================
+        print("\n" + "="*70)
+        print("🔍 VERIFICATION")
+        print("="*70)
+        
+        time.sleep(3)
+        
+        # 🔥 Print current URL
+        current_url = driver.current_url
+        print(f"📍 Current URL: {current_url}")
+        
+        # 🔥 Print page title
+        page_title = driver.title
+        print(f"📄 Page Title: {page_title}")
+        
+        # Check if on success page
+        if "post" in current_url.lower() or "create" not in current_url.lower():
+            print("✅ Post created successfully! (URL changed from create page)")
+        else:
+            print("⚠️ Still on create page - post may not be published")
+        
+        # ============================================================
+        # STEP 13: GET SUCCESS MESSAGE
         # ============================================================
         print("\n📨 Checking for success message...")
         
         success_message = None
         
         try:
-            time.sleep(3)
-            
             # Check for success elements
             success_selectors = [
                 ".success-message",
@@ -661,10 +682,10 @@ def main():
             print("\n✅ Post created successfully!")
         
         # ============================================================
-        # STEP 13: SAVE RESULTS
+        # STEP 14: SAVE RESULTS
         # ============================================================
-        print("\n⏳ Waiting for response...")
-        time.sleep(3)
+        print("\n⏳ Saving results...")
+        time.sleep(2)
         
         driver.save_screenshot(str(BASE_DIR / "babycenter_result.png"))
         print("📸 Screenshot saved")
@@ -676,6 +697,8 @@ def main():
             f.write(f"Screen Name: {screen_name}\n")
             f.write(f"Post Title: {post_title}\n")
             f.write(f"Post Details: {post_details}\n")
+            f.write(f"Final URL: {current_url}\n")
+            f.write(f"Page Title: {page_title}\n")
         print("📁 Credentials saved")
         
         print("\n" + "="*70)
@@ -683,6 +706,8 @@ def main():
         print(f"📧 Email: {email}")
         print(f"🔑 Password: {password}")
         print(f"🖥️ Screen Name: {screen_name}")
+        print(f"📍 Final URL: {current_url}")
+        print(f"📄 Page Title: {page_title}")
         if success_message:
             print(f"📨 Success: {success_message}")
         print("="*70)
